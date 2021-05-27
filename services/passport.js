@@ -20,10 +20,9 @@ passport.use(new GoogleStrategy({
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
     callbackURL: '/auth/google/callback'
-}, (accessToken, refreshToken, profile, done)=>{
-
-    User.findOne({googleId:profile.id})
-    .then((existingUser)=>{
+},async (accessToken, refreshToken, profile, done)=>{
+  const existingUser = await User.findOne({googleId:profile.id});
+   
         if(existingUser)
         {done(null,existingUser);}
         else
@@ -31,7 +30,7 @@ passport.use(new GoogleStrategy({
             new User({googleId: profile.id,name:profile.displayName}).save()
             .then(user => done(null,user));
         }
-    })
+  
    console.log(profile);
 
      }
